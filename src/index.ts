@@ -1,23 +1,19 @@
-import { supportedLangs } from './supportedLangs';
+const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
 
-export type WordPair = {
-  word: string;
-  en: string;
-};
-export type GameWords = {
-  getAllWords: () => WordPair[];
-  getByCategory: (category: string) => WordPair[];
-};
-
-const cachedGameWords: Record<string, GameWords> = {};
-
-export const gameWords = async (languageCode: string): Promise<GameWords> => {
-  if (!supportedLangs.includes(languageCode)) {
-    throw new Error(`Language ${languageCode} is not supported.`);
+export const updateScore = (points: number, previousScore: number = 0, previousTimestamp: Date = new Date()) => {
+  if (!(points >= 0 && points <= 1)) {
+    throw new Error(`'points' must be in the interval [0,1].`);
   }
-  if (cachedGameWords[languageCode]) {
-    return cachedGameWords[languageCode];
+  const timeStampDelta = +new Date() - +previousTimestamp;
+  const days = timeStampDelta / MILLISECONDS_PER_DAY;
+  const multiplier = (points - 0.5) * 2;
+  if (multiplier >= 0) {
+    const frequencyBonus = Math.max(4 - 2 * days, 1);
+    const staticBonus = 0.01;
+    const maxIncrease = Math.max(1, previousScore);
+    return previousScore + Math.min(staticBonus + days * multiplier * frequencyBonus, maxIncrease);
   }
+<<<<<<< HEAD
   let languageData: Record<string, [string, string[]]>;
 
   languageData = await import(`../words/${languageCode}`);
@@ -47,4 +43,8 @@ export const gameWords = async (languageCode: string): Promise<GameWords> => {
   };
   cachedGameWords[languageCode] = out;
   return out;
+=======
+  if (previousScore <= 0) return 0;
+  return Math.floor(previousScore / 4);
+>>>>>>> parent of 452adf3... add language data
 };
