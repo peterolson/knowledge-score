@@ -13,38 +13,6 @@ export const updateScore = (points: number, previousScore: number = 0, previousT
     const maxIncrease = Math.max(1, previousScore);
     return previousScore + Math.min(staticBonus + days * multiplier * frequencyBonus, maxIncrease);
   }
-<<<<<<< HEAD
-  let languageData: Record<string, [string, string[]]>;
-
-  languageData = await import(`../words/${languageCode}`);
-  const allWords = new Set();
-  const byCategory: Record<string, Set<string>> = {};
-  const translations: Record<string, string> = {};
-  for (const word of Object.keys(languageData)) {
-    const data = languageData[word];
-    if (!data) continue;
-    if (!data[0] || !data[1]) continue;
-    translations[word] = data[0];
-    for (const category of data[1]) {
-      if (!byCategory[category]) byCategory[category] = new Set();
-      byCategory[category].add(word);
-      allWords.add(word);
-    }
-  }
-  function toWordPair(word: string) {
-    return {
-      word,
-      en: translations[word],
-    };
-  }
-  const out: GameWords = {
-    getAllWords: () => [...allWords].map(toWordPair),
-    getByCategory: (category) => [...byCategory[category]].map(toWordPair) || [],
-  };
-  cachedGameWords[languageCode] = out;
-  return out;
-=======
   if (previousScore <= 0) return 0;
   return Math.floor(previousScore / 4);
->>>>>>> parent of 452adf3... add language data
 };
